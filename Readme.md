@@ -2,7 +2,7 @@
 
 A fullstack CRUD website
 
-Techstack- NEXTJS
+Techstack- NEXTJS,EXPRESSJS,MONGODB,JAVASCRIPT,HTML,CSS
 
 ## Backend
 
