@@ -8,7 +8,7 @@ export default function InstituteRequest({ params }) {
 
   const API_URL =
     process.env.NEXT_PUBLIC_API_URL ||
-    "https://coachingmandi-server.onrender.com/";
+    "https://coachingmandi-server.onrender.com";
 
   useEffect(() => {
     fetch(`${API_URL}/api/institutes/${id}`)
