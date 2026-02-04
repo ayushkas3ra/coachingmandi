@@ -12,7 +12,9 @@ export default function Home() {
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://coachingmandi-server.onrender.com";
 
   useEffect(() => {
     fetch(`${API_URL}/api/institutes`)
