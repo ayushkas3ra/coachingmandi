@@ -41,6 +41,11 @@ export default function InstituteRequest({ params }) {
 
   const handleCallBackSubmit = async (e) => {
     e.preventDefault();
+    if (formData.phone.length !== 10) {
+      alert("Please enter a valid 10 digit phone number.");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
