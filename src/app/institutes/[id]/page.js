@@ -1,8 +1,12 @@
+"use client";
+
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 
 export default function InstituteRequest({ params }) {
-  const { id } = use(params);
+  const resolvedParams = use(params);
+  const id = resolvedParams.id;
+
   const [institute, setInstitute] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -11,8 +15,13 @@ export default function InstituteRequest({ params }) {
     "https://coachingmandi-server.onrender.com";
 
   useEffect(() => {
+    if (!id) return;
+
     fetch(`${API_URL}/api/institutes/${id}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
       .then((data) => {
         setInstitute(data);
         setLoading(false);
@@ -26,7 +35,7 @@ export default function InstituteRequest({ params }) {
   if (loading)
     return (
       <div className="container" style={{ padding: "50px" }}>
-        <h1>Loading...</h1>
+        <h1 style={{ color: "white" }}>Loading...</h1>
       </div>
     );
 
@@ -36,11 +45,13 @@ export default function InstituteRequest({ params }) {
         className="container"
         style={{ padding: "50px", textAlign: "center" }}
       >
-        <h1>Institute not found</h1>
+        <h1 style={{ color: "white" }}>Institute not found</h1>
+        <Link href="/" style={{ color: "var(--primary)" }}>
+          Go Back Home
+        </Link>
       </div>
     );
   }
-
   return (
     <div>
       <div
