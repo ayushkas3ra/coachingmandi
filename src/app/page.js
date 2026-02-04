@@ -12,9 +12,10 @@ export default function Home() {
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/institutes")
+    fetch(`${API_URL}/api/institutes`)
       .then((res) => res.json())
       .then((data) => {
         setInstitutes(data);
