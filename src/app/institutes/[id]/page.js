@@ -2,7 +2,7 @@ import { useState, useEffect, use } from "react";
 import Link from "next/link";
 
 export default function InstituteRequest({ params }) {
-  const { id } = use(params); // ID nikalne ka naya tarika
+  const { id } = use(params);
   const [institute, setInstitute] = useState(null);
   const [loading, setLoading] = useState(true);
 
