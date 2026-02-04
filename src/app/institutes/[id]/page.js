@@ -7,7 +7,8 @@ export default function InstituteRequest({ params }) {
   const [loading, setLoading] = useState(true);
 
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || "https://your-render-link.onrender.com";
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://coachingmandi-server.onrender.com/";
 
   useEffect(() => {
     fetch(`${API_URL}/api/institutes/${id}`)
