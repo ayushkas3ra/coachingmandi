@@ -7,8 +7,11 @@ export default function InstituteRequest({ params }) {
   const resolvedParams = use(params);
   const id = resolvedParams.id;
 
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({ name: "", phone: "" });
   const [institute, setInstitute] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const API_URL =
     process.env.NEXT_PUBLIC_API_URL ||
@@ -32,6 +35,41 @@ export default function InstituteRequest({ params }) {
       });
   }, [id, API_URL]);
 
+  const handleRequestCallBack = () => {
+    setShowModal(true);
+  };
+
+  const handleCallBackSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      const res = await fetch(`${API_URL}/api/callbacks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          instituteId: id,
+          instituteName: institute.name,
+        }),
+      });
+
+      if (res.ok) {
+        alert("Success!");
+        setShowModal(false);
+        setFormData({ name: "", phone: "" });
+      } else {
+        alert("Server error. Please try again later.");
+      }
+    } catch (err) {
+      console.error("Submission failed:", err);
+      alert("Network error. Check your connection.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (loading)
     return (
       <div className="container" style={{ padding: "50px" }}>
@@ -52,6 +90,7 @@ export default function InstituteRequest({ params }) {
       </div>
     );
   }
+
   return (
     <div>
       <div
@@ -106,7 +145,6 @@ export default function InstituteRequest({ params }) {
             gap: "50px",
           }}
         >
-          {/* Main Content */}
           <div>
             <section style={{ marginBottom: "40px" }}>
               <h2
@@ -114,7 +152,6 @@ export default function InstituteRequest({ params }) {
                   marginBottom: "20px",
                   borderBottom: "2px solid var(--primary)",
                   display: "inline-block",
-                  paddingBottom: "5px",
                 }}
               >
                 About
@@ -142,74 +179,18 @@ export default function InstituteRequest({ params }) {
                       borderRadius: "10px",
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
                     }}
                   >
                     <div>
-                      <h3 style={{ fontSize: "1.1rem", marginBottom: "5px" }}>
-                        {offer.name}
-                      </h3>
+                      <h3 style={{ fontSize: "1.1rem" }}>{offer.name}</h3>
                       <span style={{ fontSize: "0.9rem", color: "#a0a0a0" }}>
                         Duration: {offer.duration}
                       </span>
                     </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div
-                        style={{
-                          color: "var(--primary)",
-                          fontSize: "1.2rem",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {offer.fee}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section>
-              <h2 style={{ marginBottom: "20px" }}>Student Reviews</h2>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "20px",
-                }}
-              >
-                {institute.reviews?.map((review, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      background: "#131a26",
-                      padding: "20px",
-                      borderRadius: "10px",
-                    }}
-                  >
                     <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "10px",
-                      }}
+                      style={{ color: "var(--primary)", fontWeight: "bold" }}
                     >
-                      <span style={{ fontWeight: "bold" }}>{review.user}</span>
-                      <span style={{ color: "#fbbf24" }}>
-                        {"★".repeat(review.rating)}
-                      </span>
-                    </div>
-                    <p style={{ color: "#d1d1d1", fontStyle: "italic" }}>
-                      "{review.comment}"
-                    </p>
-                    <div
-                      style={{
-                        marginTop: "10px",
-                        fontSize: "0.8rem",
-                        color: "#6c757d",
-                      }}
-                    >
-                      {review.date}
+                      {offer.fee}
                     </div>
                   </div>
                 ))}
@@ -217,7 +198,6 @@ export default function InstituteRequest({ params }) {
             </section>
           </div>
 
-          {/* Sidebar */}
           <div>
             <div
               className="glass"
@@ -230,6 +210,7 @@ export default function InstituteRequest({ params }) {
             >
               <h3 style={{ marginBottom: "20px" }}>Contact Institute</h3>
               <button
+                onClick={handleRequestCallBack}
                 className="btn btn-primary"
                 style={{ width: "100%", marginBottom: "15px" }}
               >
@@ -245,20 +226,111 @@ export default function InstituteRequest({ params }) {
               >
                 Download Brochure
               </button>
-              <p
-                style={{
-                  marginTop: "20px",
-                  fontSize: "0.9rem",
-                  color: "#a0a0a0",
-                  textAlign: "center",
-                }}
-              >
-                Typical response time: 2 hours
-              </p>
             </div>
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.85)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="glass"
+            style={{
+              padding: "30px",
+              borderRadius: "15px",
+              width: "350px",
+              border: "1px solid #444",
+            }}
+          >
+            <h3
+              style={{
+                marginBottom: "20px",
+                textAlign: "center",
+                color: "white",
+              }}
+            >
+              Call Back Request
+            </h3>
+            <form onSubmit={handleCallBackSubmit}>
+              <input
+                type="text"
+                placeholder="Full Name"
+                required
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  marginBottom: "15px",
+                  borderRadius: "8px",
+                  background: "#131a26",
+                  border: "1px solid #333",
+                  color: "white",
+                }}
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+              />
+              <input
+                type="tel"
+                placeholder="Mobile Number"
+                required
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  marginBottom: "20px",
+                  borderRadius: "8px",
+                  background: "#131a26",
+                  border: "1px solid #333",
+                  color: "white",
+                }}
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
+              />
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn btn-primary"
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  opacity: submitting ? 0.7 : 1,
+                }}
+              >
+                {submitting ? "Sending..." : "Submit Request"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                style={{
+                  width: "100%",
+                  marginTop: "10px",
+                  background: "transparent",
+                  color: "#666",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
