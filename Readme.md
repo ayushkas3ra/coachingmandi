@@ -2,6 +2,8 @@
 
 A fullstack CRUD website
 
+Techstack- NEXTJS,EXPRESSJS,MONGODB,JAVASCRIPT,HTML,CSS
+
 ## Backend
 
 For backend code [coachingmandi-server](https://github.com/ayushkas3ra/coachingmandi-server)
